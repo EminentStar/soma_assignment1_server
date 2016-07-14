@@ -9,6 +9,8 @@ var pool = mysql.createPool({
   password: '0000'
 });
 
+var iconv = require('iconv-lite');
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   //res.  send('user ' + req.params.id);
@@ -21,6 +23,32 @@ router.get('/', function(req, res, next) {
       connection.release();
     });
   });
+});
+
+/* POST users listing */
+router.post('/', function(req, res){
+
+  var email = req.body.email;
+  var name = req.body.name;
+  var password = req.body.password;
+
+  var data = {email: email, name:name, password:password};
+
+  console.log("email: "+ email + ", name: "+ name +", password: "+ password);
+
+  pool.getConnection(function(err, connection){
+    var query = connection.query("INSERT INTO member SET ?", data, function(err, result){
+      if(err){
+        res.send("{'isSucceeded' : false }");
+        console.log("err : " + err);
+      }else{
+        console.log(email + name + password);
+        res.send("{'isSucceeded' : true}");
+      }
+    });
+    console.log(query.sql);
+  });
+
 });
 
 module.exports = router;

@@ -10,6 +10,8 @@ var users = require('./routes/users');
 
 var app = express();
 
+var port = process.env.PORT || 9000;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -21,7 +23,7 @@ app.set('port', process.env.PORT || 9000);
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -62,12 +64,15 @@ app.use(function(err, req, res, next) {
 // ---- create server -----
 module.exports = app;
 
-app.get("/users", function(req, res){
-	res.send("OK JK!");
-});
 
+app.listen(port);
+console.log('server started! At http://localhost:' + port );
+
+/*
 var server = app.listen(app.get('port'), function(){
 	console.log('Express server listening on port ' + server.address().port);
 });
+*/
+
 
 module.exports = app;
