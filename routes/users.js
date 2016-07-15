@@ -55,9 +55,43 @@ router.post('/', function(req, res){
         console.log(email + name + password);
         res.send(json);
       }
+      connection.release();
     });
   });
+});
 
+//login 기능
+router.post('/login', function(req, res){
+  var email = req.body.email;
+  var password = req.body.password;
+
+  var data = {
+    email: email,
+    password: password
+  };
+
+
+  var json = {
+    isSucceeded: false,
+    rowCount: 0
+  };
+
+  console.log("email: "+ email + ", password: "+ password);
+
+  pool.getConnection(function(err, connection){
+    connection.query("SELECT * FROM MEMBER WHERE email ='"+email+"' and password = '"+password+"'", function(err, rows){
+      if(err){
+        console.error("err : " + err);
+        res.send(json);
+      }else{
+        console.log("rowsCnt: " + rows.length);
+        json.isSucceeded = true;
+        json.rowCount = rows.length;
+        res.send(json);
+      }
+      connection.release();
+    });
+  });
 });
 
 module.exports = router;
