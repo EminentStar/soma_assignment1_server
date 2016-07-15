@@ -11,7 +11,6 @@ var users = require('./routes/users');
 var app = express();
 
 var port = process.env.PORT || 9000;
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

@@ -31,22 +31,31 @@ router.post('/', function(req, res){
   var email = req.body.email;
   var name = req.body.name;
   var password = req.body.password;
+  var createTime = new Date();
 
-  var data = {email: email, name:name, password:password};
+  var json = {
+    isSucceeded: true
+  }
+
+  var data = {
+    email: email,
+    name:name,
+    password:password,
+    createTime: createTime};
 
   console.log("email: "+ email + ", name: "+ name +", password: "+ password);
 
   pool.getConnection(function(err, connection){
-    var query = connection.query("INSERT INTO member SET ?", data, function(err, result){
+    connection.query("INSERT INTO member SET ?", data, function(err, result){
       if(err){
-        res.send("{'isSucceeded' : false }");
+        json.isSucceeded = false;
+        res.send(json);
         console.log("err : " + err);
       }else{
         console.log(email + name + password);
-        res.send("{'isSucceeded' : true}");
+        res.send(json);
       }
     });
-    console.log(query.sql);
   });
 
 });
