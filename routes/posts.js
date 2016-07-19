@@ -11,7 +11,25 @@ var pool = mysql.createPool({
 
 var iconv = require('iconv-lite');
 
-/* POST users listing */
+/*GET */
+router.get('/article', function(req, res){
+    console.log("GET method /article ");
+
+    pool.getConnection(function(err, connection){
+        connection.query("SELECT * FROM Post", function(err, rows){
+            if(err){
+                console.log("err : " + err);
+            }else{
+                console.log("success");
+                res.send(rows);
+            }
+            connection.release();
+        });
+    });
+});
+
+
+/* POST */
 router.post('/article', function(req, res){
 
     var email = req.body.email;
