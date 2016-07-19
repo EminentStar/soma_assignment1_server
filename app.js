@@ -66,14 +66,13 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 
-app.listen(port);
-console.log('server started! At http://localhost:' + port );
+//app.listen(port);
 
-/*
 var server = app.listen(app.get('port'), function(){
 	console.log('Express server listening on port ' + server.address().port);
 });
-*/
+
+console.log('server started! At http://localhost:' + port );
 
 
 module.exports = app;
