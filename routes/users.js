@@ -11,7 +11,7 @@ var pool = mysql.createPool({
 
 var iconv = require('iconv-lite');
 
-/* GET users listing. */
+//총 회원수 조회 기능
 router.get('/', function(req, res, next) {
   var json = {
     userCount:0,
@@ -28,7 +28,30 @@ router.get('/', function(req, res, next) {
   });
 });
 
-/* POST users listing */
+//사용자 정보 수정 기능
+router.put('/common', function(req, res){
+
+
+  var data = {
+    name : req.body.name,
+    introduction : req.body.introduction
+  };
+  pool.getConnection(function(err, connection){
+    connection.query("UPDATE User SET ? WHERE email = '" + req.body.email + "'", data, function(err, result){
+      if(err){
+        //json.isSucceeded = false;
+        res.send(result);
+        console.log("err : " + err);
+      }else{
+        res.send(result);
+        console.log("success");
+      }
+      connection.release();
+    });
+  });
+});
+
+//일반 사용자 회원가입 기능
 router.post('/common', function(req, res){
 
   var email = req.body.email;
@@ -65,7 +88,7 @@ router.post('/common', function(req, res){
   });
 });
 
-//login 기능
+//일반 사용자 login 기능
 router.post('/common/login', function(req, res){
   var email = req.body.email;
   var pwd = req.body.pwd;
