@@ -13,7 +13,6 @@ var iconv = require('iconv-lite');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  //res.  send('user ' + req.params.id);
   pool.getConnection(function(err, connection){
     connection.query('SELECT * FROM member', function(err, rows){
       if(err) console.error("err : " + err);
@@ -26,11 +25,11 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST users listing */
-router.post('/', function(req, res){
+router.post('/common', function(req, res){
 
   var email = req.body.email;
   var name = req.body.name;
-  var password = req.body.password;
+  var pwd = req.body.pwd;
   var createTime = new Date();
 
   var json = {
@@ -40,20 +39,22 @@ router.post('/', function(req, res){
   var data = {
     email: email,
     name:name,
-    password:password,
-    createTime: createTime};
+    pwd: pwd,
+    createTime: createTime,
+    isFacebook: 0
+  };
 
-  console.log("email: "+ email + ", name: "+ name +", password: "+ password);
+  console.log("email: "+ email + ", name: "+ name +", pwd: "+ pwd);
 
   pool.getConnection(function(err, connection){
-    connection.query("INSERT INTO member SET ?", data, function(err, result){
+    connection.query("INSERT INTO User SET ?", data, function(err, result){
       if(err){
         json.isSucceeded = false;
         res.send(json);
         console.log("err : " + err);
       }else{
-        console.log(email + name + password);
         res.send(json);
+        console.log("success");
       }
       connection.release();
     });
@@ -61,25 +62,24 @@ router.post('/', function(req, res){
 });
 
 //login 기능
-router.post('/login', function(req, res){
+router.post('/common/login', function(req, res){
   var email = req.body.email;
-  var password = req.body.password;
+  var pwd = req.body.pwd;
 
   var data = {
     email: email,
-    password: password
+    pwd: pwd
   };
-
 
   var json = {
     isSucceeded: false,
     rowCount: 0
   };
 
-  console.log("email: "+ email + ", password: "+ password);
+  console.log("email: "+ email + ", pwd: "+ pwd);
 
   pool.getConnection(function(err, connection){
-    connection.query("SELECT * FROM MEMBER WHERE email ='"+email+"' and password = '"+password+"'", function(err, rows){
+    connection.query("SELECT * FROM User WHERE email ='"+email+"' and pwd = '"+pwd+"'", function(err, rows){
       if(err){
         console.error("err : " + err);
         res.send(json);
