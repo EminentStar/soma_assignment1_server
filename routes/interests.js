@@ -34,7 +34,7 @@ router.post('/', function(req, res){
         connection.query("INSERT INTO Interest SET ?", data, function(err, result){
             if(err){
                 console.log("err : " + err);
-                res.send(err);
+                //res.send(err);
             }else{
                 res.send("success");
             }
