@@ -15,8 +15,15 @@ var iconv = require('iconv-lite');
 router.get('/article', function(req, res){
     console.log("GET method /article ");
 
+    var query = "SELECT Post.postId AS postId,"+
+        " Post.email AS email, Post.title AS title,"+
+        " Post.content AS content, isComplete,"+
+        "(SELECT COUNT(*) FROM Interest WHERE Post.postId = Interest.postId ) AS interestCount, "+
+        "(SELECT COUNT(*) FROM Comment WHERE Post.postId = Comment.postId ) AS commentCount"+
+        " FROM Post ORDER BY postId DESC;"
+
     pool.getConnection(function(err, connection){
-        connection.query("SELECT * FROM Post ORDER BY postId DESC", function(err, rows){
+        connection.query(query, function(err, rows){
             if(err){
                 console.log("err : " + err);
             }else{
