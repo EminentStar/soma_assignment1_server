@@ -16,7 +16,7 @@ router.get('/article', function(req, res){
     console.log("GET method /article ");
 
     pool.getConnection(function(err, connection){
-        connection.query("SELECT * FROM Post", function(err, rows){
+        connection.query("SELECT * FROM Post ORDER BY postId DESC", function(err, rows){
             if(err){
                 console.log("err : " + err);
             }else{
