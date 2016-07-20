@@ -13,12 +13,16 @@ var iconv = require('iconv-lite');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+  var json = {
+    userCount:0,
+  }
+
   pool.getConnection(function(err, connection){
-    connection.query('SELECT * FROM member', function(err, rows){
+    connection.query('SELECT COUNT(*) FROM User', function(err, rows){
       if(err) console.error("err : " + err);
       console.log("rows: " + JSON.stringify(rows));
-      res.send(rows);
-      //res.render('user', {title: 'test', rows:rows});
+      json.userCount = rows.length;
+      res.send(json);
       connection.release();
     });
   });
@@ -73,6 +77,8 @@ router.post('/common/login', function(req, res){
 
   var json = {
     isSucceeded: false,
+    name: "",
+    email:"",
     rowCount: 0
   };
 
@@ -88,6 +94,8 @@ router.post('/common/login', function(req, res){
         json.isSucceeded = true;
         json.rowCount = rows.length;
         if(rows.length != 0){
+          json.name = rows[0].name;
+          json.email = rows[0].email;
           res.send(json);
         }
       }
