@@ -82,12 +82,14 @@ router.post('/common/login', function(req, res){
     connection.query("SELECT * FROM User WHERE email ='"+email+"' and pwd = '"+pwd+"'", function(err, rows){
       if(err){
         console.error("err : " + err);
-        res.send(json);
+        //res.send(json);
       }else{
         console.log("rowsCnt: " + rows.length);
         json.isSucceeded = true;
         json.rowCount = rows.length;
-        res.send(json);
+        if(rows.length != 0){
+          res.send(json);
+        }
       }
       connection.release();
     });
