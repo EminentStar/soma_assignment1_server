@@ -34,7 +34,8 @@ router.put('/common', function(req, res){
 
   var data = {
     name : req.body.name,
-    introduction : req.body.introduction
+    introduction : req.body.introduction,
+    phoneNumber: req.body.phoneNumber
   };
   pool.getConnection(function(err, connection){
     connection.query("UPDATE User SET ? WHERE email = '" + req.body.email + "'", data, function(err, result){
@@ -58,6 +59,8 @@ router.post('/common', function(req, res){
   var name = req.body.name;
   var pwd = req.body.pwd;
   var createTime = new Date();
+  var phoneNumber = req.body.phoneNumber;
+  var fcmToken = req.body.fcmToken;
 
   var json = {
     isSucceeded: true
@@ -68,7 +71,9 @@ router.post('/common', function(req, res){
     name:name,
     pwd: pwd,
     createTime: createTime,
-    isFacebook: 0
+    isFacebook: 0,
+    phoneNumber: phoneNumber,
+    fcmToken: fcmToken
   };
 
   console.log("email: "+ email + ", name: "+ name +", pwd: "+ pwd);
@@ -102,6 +107,8 @@ router.post('/common/login', function(req, res){
     isSucceeded: false,
     name: "",
     email:"",
+    phoneNnumber:"",
+    fcmToken:"",
     rowCount: 0
   };
 
@@ -119,6 +126,8 @@ router.post('/common/login', function(req, res){
         if(rows.length != 0){
           json.name = rows[0].name;
           json.email = rows[0].email;
+          json.phoneNnumber = rows[0].phoneNnumber,
+          json.fcmToken = rows[0].fcmToken;
           res.send(json);
         }
       }
