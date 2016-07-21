@@ -11,6 +11,27 @@ var pool = mysql.createPool({
 
 var iconv = require('iconv-lite');
 
+router.get('/:postId', function(req, res){
+    var postId = req.params.postId;
+    pool.getConnection(function(err, connection){
+
+        var query = "SELECT Interest.email AS email," +
+            " (SELECT phoneNumber FROM User WHERE User.email = Interest.email) AS phoneNumber," +
+            " Interest.description AS description " +
+            " FROM Interest WHERE postId ="+ postId;
+
+        connection.query(query, function(err, rows){
+            if(err){
+                console.log("err : " + err);
+            }else{
+                console.log("success");
+                res.send(rows);
+            }
+        });
+        connection.release();
+    });
+});
+
 /* POST */
 router.post('/', function(req, res){
 
