@@ -20,6 +20,7 @@ var message = { //this may vary according to the message type (single recipient,
     to: 'registration_token',
     collapse_key: 'matching',
     data: {
+        title: '타이틀!!!',
         message : 'your_custom_data_value'
     },
     notification: {
