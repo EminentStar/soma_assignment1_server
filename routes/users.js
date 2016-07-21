@@ -107,7 +107,7 @@ router.post('/common/login', function(req, res){
     isSucceeded: false,
     name: "",
     email:"",
-    phoneNnumber:"",
+    phoneNumber:"",
     fcmToken:"",
     rowCount: 0
   };
@@ -126,7 +126,7 @@ router.post('/common/login', function(req, res){
         if(rows.length != 0){
           json.name = rows[0].name;
           json.email = rows[0].email;
-          json.phoneNnumber = rows[0].phoneNnumber,
+          json.phoneNumber = rows[0].phoneNumber,
           json.fcmToken = rows[0].fcmToken;
           res.send(json);
         }
