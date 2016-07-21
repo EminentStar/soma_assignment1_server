@@ -14,6 +14,13 @@ var comments = require('./routes/comments');
 var app = express();
 
 var port = process.env.PORT || 9000;
+
+var firebase = require("firebase");
+firebase.initializeApp({
+  serviceAccount: "./somahw1-019548c762e0.json",
+  databaseURL: "https://somahw1-7b809.firebaseio.com"
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
