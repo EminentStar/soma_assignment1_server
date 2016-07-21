@@ -30,8 +30,6 @@ router.get('/', function(req, res, next) {
 
 //사용자 정보 수정 기능
 router.put('/common', function(req, res){
-
-
   var data = {
     name : req.body.name,
     introduction : req.body.introduction,
@@ -81,6 +79,7 @@ router.post('/common', function(req, res){
   pool.getConnection(function(err, connection){
     connection.query("INSERT INTO User SET ?", data, function(err, result){
       if(err){
+        console.log(err);
         json.isSucceeded = false;
         res.send(json);
         console.log("err : " + err);
@@ -118,16 +117,18 @@ router.post('/common/login', function(req, res){
     connection.query("SELECT * FROM User WHERE email ='"+email+"' and pwd = '"+pwd+"'", function(err, rows){
       if(err){
         console.error("err : " + err);
-        //res.send(json);
       }else{
         console.log("rowsCnt: " + rows.length);
-        json.isSucceeded = true;
         json.rowCount = rows.length;
         if(rows.length != 0){
+          json.isSucceeded = true;
           json.name = rows[0].name;
           json.email = rows[0].email;
           json.phoneNumber = rows[0].phoneNumber,
           json.fcmToken = rows[0].fcmToken;
+          res.send(json);
+        }else{
+          console.log("로그인 실패");
           res.send(json);
         }
       }

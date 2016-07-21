@@ -101,9 +101,10 @@ router.post('/', function(req, res){
         connection.query("INSERT INTO Interest SET ?", data, function(err, result){
             if(err){
                 console.log("err : " + err);
-                //res.send(err);
+                json.isSucceeded = false;
+                res.send(json);
             }else{
-                res.send("success");
+                res.send(json);
             }
             connection.release();
         });
