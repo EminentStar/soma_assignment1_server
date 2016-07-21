@@ -11,6 +11,24 @@ var pool = mysql.createPool({
 
 var iconv = require('iconv-lite');
 
+var FCM = require('fcm-node');
+
+var serverKey = 'AIzaSyAfjEzelxilfXZ1xZSWBfRF-YNVx5WZIns';
+var fcm = new FCM(serverKey);
+
+var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+    to: 'registration_token',
+    collapse_key: 'matching',
+    data: {
+        message : 'your_custom_data_value'
+    },
+    notification: {
+        title: '튜터 매칭',
+        body: 'Body of your push notification',
+        icon: 'ic_launcher' //now required
+    }
+};
+
 router.get('/:postId', function(req, res){
     var postId = req.params.postId;
     pool.getConnection(function(err, connection){
@@ -25,6 +43,33 @@ router.get('/:postId', function(req, res){
                 console.log("err : " + err);
             }else{
                 console.log("success");
+                res.send(rows);
+            }
+        });
+        connection.release();
+    });
+});
+
+router.get('/push/:email', function(req, res){
+    var email = req.params.email;
+
+    console.log("email: " + email);
+
+    pool.getConnection(function(err, connection){
+        var query = "SELECT fcmToken FROM User WHERE email = '" + email + "';";
+        connection.query(query, function(err, rows){
+            if(err){
+                console.log("err : " + err);
+            }else{
+                console.log("Query Success");
+                message.to = rows[0].fcmToken;
+                fcm.send(message, function(err, response){
+                   if(err){
+                       console.log(err);
+                   }else{
+                       console.log("Successfully sent with response: ", response);
+                   }
+                });
                 res.send(rows);
             }
         });
