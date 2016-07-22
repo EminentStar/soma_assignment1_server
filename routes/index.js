@@ -48,11 +48,8 @@ router.post('/deleteUser', function(req,res){
           //alert("삭제 실패")
       else{//회원삭제 성공 및 갱신
         pool.getConnection(function(err, connection){
-          connection.query('SELECT email, name, phoneNumber, createTime FROM User', function(err, rows){
+          connection.query("SELECT email, name, introduction, createTime, isFacebook, phoneNumber, gcmToken FROM User", function(err, rows){
             if(err) console.error("err : " + err);
-            //console.log("rows: " + JSON.stringify(rows));
-            //json.userCount = rows.length;
-            //res.send(json);
             connection.release();
             res.render('cmsUserDelete', {userList: rows});
           });
