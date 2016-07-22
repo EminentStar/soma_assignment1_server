@@ -58,7 +58,7 @@ router.post('/common', function(req, res){
   var pwd = req.body.pwd;
   var createTime = new Date();
   var phoneNumber = req.body.phoneNumber;
-  var fcmToken = req.body.fcmToken;
+  var gcmToken = req.body.gcmToken;
 
   var json = {
     isSucceeded: true
@@ -71,7 +71,7 @@ router.post('/common', function(req, res){
     createTime: createTime,
     isFacebook: 0,
     phoneNumber: phoneNumber,
-    fcmToken: fcmToken
+    gcmToken: gcmToken
   };
 
   console.log("email: "+ email + ", name: "+ name +", pwd: "+ pwd);
@@ -107,7 +107,7 @@ router.post('/common/login', function(req, res){
     name: "",
     email:"",
     phoneNumber:"",
-    fcmToken:"",
+    gcmToken:"",
     rowCount: 0
   };
 
@@ -125,7 +125,7 @@ router.post('/common/login', function(req, res){
           json.name = rows[0].name;
           json.email = rows[0].email;
           json.phoneNumber = rows[0].phoneNumber,
-          json.fcmToken = rows[0].fcmToken;
+          json.gcmToken = rows[0].gcmToken;
           res.send(json);
         }else{
           console.log("로그인 실패");
