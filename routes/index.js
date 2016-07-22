@@ -67,15 +67,13 @@ router.post('/login', function(req, res){
   var email = req.body.email;
   var pwd = req.body.pwd;
 
-  var adminEmail
-
   console.log(req.body);
 
   console.log(email+ ",," + pwd);
 
   if(email == "admin@hweach.com" && pwd == "0000"){ //관리자 로그인 성공
     pool.getConnection(function(err, connection){
-      connection.query('SELECT email, name, phoneNumber, createTime FROM User', function(err, rows){
+      connection.query("SELECT email, name, introduction, createTime, isFacebook, phoneNumber, gcmToken FROM User", function(err, rows){
         if(err) console.error("err : " + err);
         //console.log("rows: " + JSON.stringify(rows));
         //json.userCount = rows.length;
