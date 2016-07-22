@@ -15,20 +15,6 @@ var app = express();
 
 var port = process.env.PORT || 9000;
 
-//firebase initialization
-var firebase = require("firebase");
-firebase.initializeApp({
-  serviceAccount: "./somahw1-019548c762e0.json",
-  databaseURL: "https://somahw1-7b809.firebaseio.com"
-});
-
-// As an admin, the app has access to read and write all data, regardless of Security Rules
-var db = firebase.database();
-var ref = db.ref("restricted_access/secret_document");
-ref.once("value", function(snapshot) {
-  console.log(snapshot.val());
-});
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
