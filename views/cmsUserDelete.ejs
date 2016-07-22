@@ -81,8 +81,11 @@
                     <tr>
                         <th>email</th>
                         <th>name</th>
-                        <th>phoneNumber</th>
+                        <th>introduction</th>
                         <th>createTime</th>
+                        <th>isFacebook</th>
+                        <th>phoneNumber</th>
+                        <th>gcmToken</th>
                     </tr>
                     </thead>
                     <% for (var i = 0; i <userList.length; i++){%>
@@ -90,8 +93,11 @@
                     <tr>
                         <td><%=userList[i].email%></td>
                         <td><%=userList[i].name%></td>
-                        <td><%=userList[i].phoneNumber%></td>
+                        <td><%=userList[i].introduction%></td>
                         <td><%=userList[i].createTime%></td>
+                        <td><%=userList[i].isFacebook%></td>
+                        <td><%=userList[i].phoneNumber%></td>
+                        <td><%=userList[i].gcmToken%></td>
                     </tr>
                     </tbody>
                     <%}%>

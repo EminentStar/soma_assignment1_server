@@ -20,11 +20,9 @@ router.get('/', function(req, res, next) {
 
 router.get('/cmsUserList', function(req, res){
   pool.getConnection(function(err, connection){
-    connection.query('SELECT email, name, phoneNumber, createTime FROM User', function(err, rows){
+    connection.query("SELECT email, name, introduction, createTime, isFacebook, phoneNumber, gcmToken FROM User", function(err, rows){
       if(err) console.error("err : " + err);
-      //console.log("rows: " + JSON.stringify(rows));
-      //json.userCount = rows.length;
-      //res.send(json);
+
       connection.release();
       res.render('cmsUserList', {userList: rows});
     });
@@ -33,11 +31,9 @@ router.get('/cmsUserList', function(req, res){
 
 router.get('/cmsUserDelete', function(req, res){
   pool.getConnection(function(err, connection){
-    connection.query("SELECT email, name, phoneNumber, createTime FROM User", function(err, rows){
+    connection.query("SELECT email, name, introduction, createTime, isFacebook, phoneNumber, gcmToken FROM User", function(err, rows){
       if(err) console.error("err : " + err);
-      //console.log("rows: " + JSON.stringify(rows));
-      //json.userCount = rows.length;
-      //res.send(json);
+
       connection.release();
       res.render('cmsUserDelete', {userList: rows});
     });
