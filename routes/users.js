@@ -11,6 +11,8 @@ var pool = mysql.createPool({
 
 var iconv = require('iconv-lite');
 
+var passwordHash = require('password-hash');
+
 //총 회원수 조회 기능
 router.get('/', function(req, res, next) {
   var json = {
@@ -68,12 +70,13 @@ router.put('/common', function(req, res){
 //일반 사용자 회원가입 기능
 router.post('/common', function(req, res){
 
-  var email = req.body.email;
-  var name = req.body.name;
-  var pwd = req.body.pwd;
-  var createTime = new Date();
-  var phoneNumber = req.body.phoneNumber;
-  var gcmToken = req.body.gcmToken;
+    var email = req.body.email;
+    var name = req.body.name;
+    //var pwd = req.body.pwd;
+    var pwd = passwordHash.generate(req.body.pwd);
+    var createTime = new Date();
+    var phoneNumber = req.body.phoneNumber;
+    var gcmToken = req.body.gcmToken;
 
   var json = {
     isSucceeded: true
@@ -132,26 +135,31 @@ router.post('/common/login', function(req, res){
   console.log("email: "+ email + ", pwd: "+ pwd);
 
   pool.getConnection(function(err, connection){
-    connection.query("SELECT * FROM User WHERE email ='"+email+"' and pwd = '"+pwd+"'", function(err, rows){
+    connection.query("SELECT pwd FROM User WHERE email ='"+email+"'", function(err, row){
       if(err){
         console.error("err : " + err);
       }else{
         console.log("rowsCnt: " + rows.length);
         json.rowCount = rows.length;
         if(rows.length != 0){
-          connection.query("UPDATE User SET gcmToken = '" + gcmToken + "' WHERE email = '" + email + "' ", function(err, result){
-            if(err){
-              console.error("err: "+ err);
-              res.send(json);
-            }else{
-              json.isSucceeded = true;
-              json.name = rows[0].name;
-              json.email = rows[0].email;
-              json.phoneNumber = rows[0].phoneNumber;
-              json.gcmToken = gcmToken;
-              res.send(json);
+            if(passwordHash.verify(pwd, row[0].pwd)){ //올바른 비밀번호
+                connection.query("UPDATE User SET gcmToken = '" + gcmToken + "' WHERE email = '" + email + "' ", function(err, result){
+                    if(err){
+                        console.error("err: "+ err);
+                        res.send(json);
+                    }else{
+                        json.isSucceeded = true;
+                        json.name = rows[0].name;
+                        json.email = rows[0].email;
+                        json.phoneNumber = rows[0].phoneNumber;
+                        json.gcmToken = gcmToken;
+                        res.send(json);
+                    }
+                });
+            }else{ //잘못된 비밀번호
+                console.log("로그인 실패");
+                res.send(json);
             }
-          });
         }else{
           console.log("로그인 실패");
           res.send(json);
