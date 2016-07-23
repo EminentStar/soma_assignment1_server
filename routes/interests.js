@@ -17,7 +17,7 @@ var messageToStudent = new gcm.Message({
     delayWhileIdle: true,
     timeToLive: 3,
     data: {
-        title: '"OOO님과 매칭',
+        title: 'OOO님과 매칭',
         message: '연락하세요: 010-XXXX-XXXX',
         custom_key1: 'custom data1',
         custom_key2: 'custom data2'
@@ -29,7 +29,7 @@ var messageToTutor = new gcm.Message({
     delayWhileIdle: true,
     timeToLive: 3,
     data: {
-        title: '"OOO님과 매칭',
+        title: 'OOO님과 매칭',
         message: '연락하세요: 010-XXXX-XXXX',
         custom_key1: 'custom data1',
         custom_key2: 'custom data2'
@@ -73,12 +73,12 @@ router.post('/', function(req, res){
 
     var json = {
         isSucceeded: true
-    }
+    };
 
     var data = {
         postId: postId,
         email: email,
-        description: description,
+        description: description
     };
 
     console.log("email: "+ email + ", description: " + description);
@@ -107,17 +107,17 @@ router.post('/gcm', function(req, res){
         name: "",
         phoneNumber: "",
         gcmToken: ""
-    }
+    };
     var tutorInfo = {
         email: tutorEmail,
         name: "",
         phoneNumber: "",
         gcmToken: ""
-    }
+    };
 
     var json = {
         isSucceeded: false
-    }
+    };
 
     var success = true;
 
