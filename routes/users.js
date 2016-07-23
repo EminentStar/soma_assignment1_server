@@ -18,10 +18,10 @@ router.get('/', function(req, res, next) {
   }
 
   pool.getConnection(function(err, connection){
-    connection.query('SELECT COUNT(*) FROM User', function(err, rows){
+    connection.query('SELECT COUNT(*) AS count FROM User', function(err, rows){
       if(err) console.error("err : " + err);
       console.log("rows: " + JSON.stringify(rows));
-      json.userCount = rows.length;
+      json.userCount = rows[0].count;
       res.send(json);
     });
     connection.release();
