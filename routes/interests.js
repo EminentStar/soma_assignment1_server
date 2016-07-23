@@ -97,8 +97,8 @@ router.post('/', function(req, res){
     });
 });
 
-router.post('/gcm', function(req, res){
-    var studentEmail = req.body.studentEmail;
+router.post('/gcm/:studentEmail', function(req, res){
+    var studentEmail = req.params.studentEmail;
     var postId = req.body.postId;
     var tutorEmail = req.body.email;
 
