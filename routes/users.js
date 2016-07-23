@@ -169,6 +169,8 @@ router.post("/fb", function(req, res){
   var gcmToken = req.body.gcmToken;
   var createTime = new Date();
 
+  console.log("gcmToken : " + gcmToken);
+
   var json = {
     email: email,
     pwd: "",
