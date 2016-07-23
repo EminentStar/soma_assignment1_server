@@ -113,6 +113,8 @@ router.post('/common/login', function(req, res){
   var pwd = req.body.pwd;
   var gcmToken = req.body.gcmToken;
 
+  console.log("gcmToken : " + gcmToken);
+
   var data = {
     email: email,
     pwd: pwd
