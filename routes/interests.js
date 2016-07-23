@@ -78,7 +78,7 @@ router.get('/:postId', function(req, res){
 
 
 /* POST */
-router.post('/suggest', function(req, res){
+router.post('/', function(req, res){
 
     var postId = req.body.postId;
     var studentEmail = req.body.studentEmail;
@@ -95,10 +95,10 @@ router.post('/suggest', function(req, res){
         description: description
     };
 
-    console.log("email: "+ email + ", description: " + description);
+    console.log("email: "+ tutorEmail + ", description: " + description);
 
     pool.getConnection(function(err, connection){
-        connection.query("INSERT INTO Interest SET ?", data, function(err, result){
+        connection.query("INSERT INTO Interest SET ?", data, function(err, rs){
             if(err){
                 console.log("err : " + err);
                 json.isSucceeded = false;
