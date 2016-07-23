@@ -65,7 +65,7 @@ router.get('/:postId', function(req, res){
 
 
 /* POST */
-router.post('/', function(req, res){
+router.post('/suggest', function(req, res){
 
     var postId = req.body.postId;
     var studentEmail = req.body.studentEmail;
