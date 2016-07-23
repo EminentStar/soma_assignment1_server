@@ -68,9 +68,9 @@ router.get('/:postId', function(req, res){
 router.post('/', function(req, res){
 
     var postId = req.body.postId;
+    var studentEmail = req.body.studentEmail;
     var tutorEmail = req.body.tutorEmail;
     var description = req.body.description;
-    var studentEmail = req.body.studentEmail;
 
     var json = {
         isSucceeded: true
