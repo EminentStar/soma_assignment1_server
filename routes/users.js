@@ -44,11 +44,9 @@ router.put('/common', function(req, res){
   var data = {
     email:req.body.email,
     name : req.body.name,
-    pwd: "",
     introduction : req.body.introduction,
-    createTime: "",
     phoneNumber: req.body.phoneNumber,
-    gcmToken: ""
+    gcmToken: req.body.gcmToken
   };
   pool.getConnection(function(err, connection){
     connection.query("UPDATE User SET ? WHERE email = '" + data.email + "'", data, function(err, result){
