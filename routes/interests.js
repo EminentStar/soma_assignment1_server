@@ -36,6 +36,19 @@ var messageToTutor = new gcm.Message({
     }
 });
 
+var messageSuggestion = new gcm.Message({
+    collapseKey: 'matching',
+    delayWhileIdle: true,
+    timeToLive: 3,
+    data: {
+        title: 'OOO님과 매칭',
+        message: '연락하세요: 010-XXXX-XXXX',
+        custom_key1: 'custom data1',
+        custom_key2: 'custom data2'
+    }
+});
+
+
 var server_api_key = 'AIzaSyCtUrgS0kcQM44lNQ4U3S8jxrIYWHukDoE';
 var sender = new gcm.Sender(server_api_key);
 var registrationIds = [];
@@ -99,8 +112,8 @@ router.post('/suggest', function(req, res){
                     }
                     else{
                         registrationIds.push(row[0].gcmToken);
-                        messageToStudent.params.data.title = "튜터링 신청이 왔습니다.";
-                        messageToStudent.params.data.message = "신청자: " + tutorEmail;
+                        messageSuggestion.params.data.title = "튜터링 신청이 왔습니다.";
+                        messageSuggestion.params.data.message = "신청자: " + tutorEmail;
                         sender.send(messageToStudent, registrationIds, 4, function(err, result){
                             if(err) console.log("err: " + err);
                             else console.log("result: " + result);
