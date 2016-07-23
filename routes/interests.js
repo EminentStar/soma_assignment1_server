@@ -112,7 +112,7 @@ router.post('/', function(req, res){
                         registrationIds.push(row[0].gcmToken);
                         messageSuggestion.params.data.title = "튜터링 신청이 왔습니다.";
                         messageSuggestion.params.data.message = "신청자: " + tutorEmail;
-                        sender.send(messageToStudent, registrationIds, 4, function(err, result){
+                        sender.send(messageSuggestion, registrationIds, 4, function(err, result){
                             if(err) console.log("err: " + err);
                             else console.log("result: " + result);
                             registrationIds = [];
