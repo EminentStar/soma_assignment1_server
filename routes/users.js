@@ -111,6 +111,7 @@ router.post('/common', function(req, res){
 router.post('/common/login', function(req, res){
   var email = req.body.email;
   var pwd = req.body.pwd;
+  var gcmToken = req.body.gcmToken;
 
   var data = {
     email: email,
@@ -136,12 +137,19 @@ router.post('/common/login', function(req, res){
         console.log("rowsCnt: " + rows.length);
         json.rowCount = rows.length;
         if(rows.length != 0){
-          json.isSucceeded = true;
-          json.name = rows[0].name;
-          json.email = rows[0].email;
-          json.phoneNumber = rows[0].phoneNumber,
-              json.gcmToken = rows[0].gcmToken;
-          res.send(json);
+          connection.query("UPDATE User SET gcmToken = '" + gcmToken + "' WHERE email = '" + email + "' ", function(err, result){
+            if(err){
+              console.error("err: "+ err);
+              res.send(json);
+            }else{
+              json.isSucceeded = true;
+              json.name = rows[0].name;
+              json.email = rows[0].email;
+              json.phoneNumber = rows[0].phoneNumber;
+              json.gcmToken = gcmToken;
+              res.send(json);
+            }
+          });
         }else{
           console.log("로그인 실패");
           res.send(json);
