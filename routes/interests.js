@@ -78,7 +78,6 @@ router.get('/:postId', function(req, res){
 
 
 /* POST */
-/* POST */
 router.post('/', function(req, res){
 
     var postId = req.body.postId;
@@ -95,7 +94,54 @@ router.post('/', function(req, res){
         email: tutorEmail,
         description: description
     };
-    
+
+    pool.getConnection(function(err, connection){
+        connection.query("INSERT INTO Interest SET ?", data, function(err, result){
+            if(err){
+                console.log("err : " + err);
+                json.isSucceeded = false;
+                res.send(json);
+            }else{
+                connection.query("SELECT gcmToken FROM User WHERE email = '" + studentEmail + "'", function(err, row){
+                    if(err){
+                        console.log("err: " + err);
+                        json.isSucceeded = false;
+                        res.send(json);
+                    }
+                    else{
+                        registrationIds.push(row[0].gcmToken);
+                        messageSuggestion.params.data.title = "튜터링 신청이 왔습니다.";
+                        messageSuggestion.params.data.message = "신청자: " + tutorEmail;
+                        sender.send(messageToStudent, registrationIds, 4, function(err, result){
+                            if(err) console.log("err: " + err);
+                            else console.log("result: " + result);
+                            registrationIds = [];
+                        });
+                        res.send(json);
+                    }
+                });
+            }
+            connection.release();
+        });
+    });
+});
+/*router.post('/', function(req, res){
+
+    var postId = req.body.postId;
+    var studentEmail = req.body.studentEmail;
+    var tutorEmail = req.body.tutorEmail;
+    var description = req.body.description;
+
+    var json = {
+        isSucceeded: true
+    };
+
+    var data = {
+        postId: postId,
+        email: tutorEmail,
+        description: description
+    };
+
     pool.getConnection(function(err, connection){
         connection.query("INSERT INTO Interest SET ?", data, function(err, result){
             if(err){
@@ -108,7 +154,7 @@ router.post('/', function(req, res){
             connection.release();
         });
     });
-});
+});*/
 
 /*router.post('/', function(req, res){
 
