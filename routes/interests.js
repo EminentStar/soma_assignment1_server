@@ -91,7 +91,6 @@ router.post('/suggest', function(req, res){
                 json.isSucceeded = false;
                 res.send(json);
             }else{
-                res.send(json);
                 connection.query("SELECT gcmToken FROM User WHERE email = '" + studentEmail + "'", function(err, row){
                     if(err){
                         console.log("err: " + err);
@@ -99,17 +98,15 @@ router.post('/suggest', function(req, res){
                         res.send(json);
                     }
                     else{
-                        if(row.length == 1){
-                            registrationIds.push(row[0].gcmToken);
-                            messageToStudent.params.data.title = "튜터링 신청이 왔습니다.";
-                            messageToStudent.params.data.message = "신청자: " + tutorEmail;
-                            sender.send(messageToStudent, registrationIds, 4, function(err, result){
-                                if(err) console.log("err: " + err);
-                                else console.log("result: " + result);
-                                registrationIds = [];
-                            });
-                            res.send(json);
-                        }
+                        registrationIds.push(row[0].gcmToken);
+                        messageToStudent.params.data.title = "튜터링 신청이 왔습니다.";
+                        messageToStudent.params.data.message = "신청자: " + tutorEmail;
+                        sender.send(messageToStudent, registrationIds, 4, function(err, result){
+                            if(err) console.log("err: " + err);
+                            else console.log("result: " + result);
+                            registrationIds = [];
+                        });
+                        res.send(json);
                     }
                 });
             }
