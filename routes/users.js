@@ -23,8 +23,19 @@ router.get('/', function(req, res, next) {
       console.log("rows: " + JSON.stringify(rows));
       json.userCount = rows.length;
       res.send(json);
-      connection.release();
     });
+    connection.release();
+  });
+});
+
+router.get('/:email', function(req,res){
+  var email = req.params.email;
+  pool.getConnection(function(err, connection){
+    connection.query("SELECT * FROM User WHERE email= '" + email + "'", function(err, result){
+      if(err) console.error("err : " + err);
+      if(result.length == 1) res.send(result[0]);
+    });
+    connection.release();
   });
 });
 
