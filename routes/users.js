@@ -31,19 +31,25 @@ router.get('/', function(req, res, next) {
 //사용자 정보 수정 기능
 router.put('/common', function(req, res){
   var data = {
+    email:req.body.email,
     name : req.body.name,
+    pwd: "",
     introduction : req.body.introduction,
-    phoneNumber: req.body.phoneNumber
+    createTime: "",
+    phoneNumber: req.body.phoneNumber,
+    gcmToken: ""
   };
   pool.getConnection(function(err, connection){
-    connection.query("UPDATE User SET ? WHERE email = '" + req.body.email + "'", data, function(err, result){
-      if(err){
-        //json.isSucceeded = false;
-        res.send(result);
-        console.log("err : " + err);
+    connection.query("UPDATE User SET ? WHERE email = '" + data.email + "'", data, function(err, result){
+      if(err){console.log("err : " + err);
       }else{
-        res.send(result);
         console.log("success");
+        connection.query("SELECT * FROM User WHERE email = '" + data.email + "'", function(req, result){
+          if(err) console.log("err: "+ err);
+          else{
+            res.send(result[0]);
+          }
+        });
       }
       connection.release();
     });
