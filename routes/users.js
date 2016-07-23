@@ -155,7 +155,7 @@ router.post("/fb", function(req, res){
     gcmToken: gcmToken
   }
   pool.getConnection(function(err, connection){
-    connection.query("SELECT * AS rowCount FROM User WHERE email ='" + email + "'", function(err, rows){
+    connection.query("SELECT * FROM User WHERE email ='" + email + "'", function(err, rows){
       if(err){
         console.error("err : " + err);
       }else{
