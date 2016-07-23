@@ -9,6 +9,37 @@ var pool = mysql.createPool({
     password: '0000'
 });
 
+var gcm = require('node-gcm');
+var fs = require('fs');
+
+var messageToStudent = new gcm.Message({
+    collapseKey: 'matching',
+    delayWhileIdle: true,
+    timeToLive: 3,
+    data: {
+        title: '"OOO님과 매칭',
+        message: '연락하세요: 010-XXXX-XXXX',
+        custom_key1: 'custom data1',
+        custom_key2: 'custom data2'
+    }
+});
+
+var messageToTutor = new gcm.Message({
+    collapseKey: 'matching',
+    delayWhileIdle: true,
+    timeToLive: 3,
+    data: {
+        title: '"OOO님과 매칭',
+        message: '연락하세요: 010-XXXX-XXXX',
+        custom_key1: 'custom data1',
+        custom_key2: 'custom data2'
+    }
+});
+
+var server_api_key = 'AIzaSyCtUrgS0kcQM44lNQ4U3S8jxrIYWHukDoE';
+var sender = new gcm.Sender(server_api_key);
+var registrationIds = [];
+
 var iconv = require('iconv-lite');
 
 router.get('/:postId', function(req, res){
@@ -66,5 +97,102 @@ router.post('/', function(req, res){
     });
 });
 
-module.exports = router;
+router.delete('', function(req, res){
+    var studentEmail = req.body.studentEmail;
+    var postId = req.body.postId;
+    var tutorEmail = req.body.email;
 
+    var studentInfo = {
+        email: studentEmail,
+        name: "",
+        phoneNumber: "",
+        gcmToken: ""
+    }
+    var tutorInfo = {
+        email: tutorEmail,
+        name: "",
+        phoneNumber: "",
+        gcmToken: ""
+    }
+
+    var json = {
+        isSucceeded: false
+    }
+
+    var success = true;
+
+    //studentEmail과 tutorEmail을 이용하여 User Table에서 각각 student와 tutor의 name, phoneNumber, gcmToken을 얻는다.
+    pool.getConnection(function(err, connection){
+        connection.query("SELECT name, phoneNumber, gcmToken FROM User WHERE email = '"
+                                            + studentInfo.email + "'",function(err,rowStudent){
+            if(err){
+                console.log("err: " + err );
+                success = false;
+            }
+            if(rowStudent.length == 1){
+                studentInfo.name = row[0].name;
+                studentInfo.phoneNumber = row[0].phoneNumber;
+                studentInfo.gcmToken = row[0].gcmToken;
+                connection.query("SELECT name, phoneNumber, gcmToken FROM User WHERE email = '"
+                                    + tutorInfo.email + "'",function(err,rowTutor){
+                    if(err) console.log("err: " + err);
+                    if(rowTutor.length == 1){
+                        tutorInfo.name = row[0].name;
+                        tutorInfo.phoneNumber = row[0].phoneNumber;
+                        tutorInfo.gcmToken = row[0].gcmToken;
+                        //student와 tutor에 보낼 메시지에 이름과 전화번호를 각자 셋팅한다.
+                        messageToStudent.data.title = tutorInfo.name + "님과 매칭";
+                        messageToStudent.data.message = "연락하세요: " + tutorInfo.phoneNumber ;
+
+                        messageToTutor.data.title = studentInfo.name + "님과 매칭";
+                        messageToTutor.data.message = "연락하세요: " + studentInfo.phoneNumber ;
+
+                        //registraionIds에 하나의 토큰을 집어넣고 send한다.
+                        registrationIds.push(studentInfo.gcmToken);
+                        sender.send(messageToStudent, registrationIds, 4, function(err, result){
+                            if(err){
+                                console.log("err: " + err);
+                                success = false;
+                            } else{
+                                registrationIds = [];
+                                registrationIds.push(tutorInfo.gcmToken);
+                                sender.send(messageToTutor, registrationIds, 4, function(err, result){
+                                    if(err){
+                                        console.log(err);
+                                        success = false;
+                                    }else{
+                                        console.log(result);
+                                        //2번의 gcm 전송에 성공하면
+                                        pool.getConnection(function(err, result){
+                                            //postId와 연관된 모든 Interest rows를 delete한다.
+                                            connection.query("DELETE FROM Interest WHERE postId = " + postId , function(err, result){
+                                                if(err){
+                                                    console.log("err: " + err);
+                                                    success = false;
+                                                } else{
+                                                    //postId의 Post row의 isComplete를 1로 바꾼다. (완성됨)
+                                                    connection.query("UPDATE Post SET isComplete = 1 WHERE postId = "+ postId, function(err, result){
+
+                                                    });
+
+                                                }
+                                            });
+                                            connection.release();
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }else{
+                        success = false;
+                    }
+                });
+            }else{
+                success = false;
+            }
+        });
+        connection.release();
+    });
+});
+
+module.exports = router;

@@ -20,7 +20,7 @@ router.get('/article', function(req, res){
         " Post.content AS content, isComplete,"+
         "(SELECT COUNT(*) FROM Interest WHERE Post.postId = Interest.postId ) AS interestCount, "+
         "(SELECT COUNT(*) FROM Comment WHERE Post.postId = Comment.postId ) AS commentCount"+
-        " FROM Post ORDER BY postId DESC;"
+        " FROM Post WHERE Post.isComplete = 0 ORDER BY postId DESC;"
 
     pool.getConnection(function(err, connection){
         connection.query(query, function(err, rows){
@@ -47,7 +47,7 @@ router.get('/article/:email', function(req, res){
         " Post.content AS content, isComplete,"+
         "(SELECT COUNT(*) FROM Interest WHERE Post.postId = Interest.postId ) AS interestCount, "+
         "(SELECT COUNT(*) FROM Comment WHERE Post.postId = Comment.postId ) AS commentCount"+
-        " FROM Post WHERE Post.email = '" + email + "' ORDER BY postId DESC;"
+        " FROM Post WHERE Post.email = '" + email + "' AND Post.isComplete = 0 ORDER BY postId DESC;"
 
     pool.getConnection(function(err, connection){
         connection.query(query, function(err, rows){
