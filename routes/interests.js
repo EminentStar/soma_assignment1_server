@@ -143,11 +143,11 @@ router.post('/gcm', function(req, res){
                         tutorInfo.phoneNumber = rowTutor[0].phoneNumber;
                         tutorInfo.gcmToken = rowTutor[0].gcmToken;
                         //student와 tutor에 보낼 메시지에 이름과 전화번호를 각자 셋팅한다.
-                        messageToStudent.data.title = tutorInfo.name + "님과 매칭";
-                        messageToStudent.data.message = "연락하세요: " + tutorInfo.phoneNumber ;
+                        messageToStudent.params.data.title = tutorInfo.name + "님과 매칭";
+                        messageToStudent.params.data.message = "연락하세요: " + tutorInfo.phoneNumber ;
 
-                        messageToTutor.data.title = studentInfo.name + "님과 매칭";
-                        messageToTutor.data.message = "연락하세요: " + studentInfo.phoneNumber ;
+                        messageToTutor.params.data.title = studentInfo.name + "님과 매칭";
+                        messageToTutor.params.data.message = "연락하세요: " + studentInfo.phoneNumber ;
 
                         //registraionIds에 하나의 토큰을 집어넣고 send한다.
                         registrationIds.push(studentInfo.gcmToken);
