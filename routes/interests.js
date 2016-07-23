@@ -95,9 +95,7 @@ router.post('/', function(req, res){
         email: tutorEmail,
         description: description
     };
-
-    console.log("email: "+ email + ", description: " + description);
-
+    
     pool.getConnection(function(err, connection){
         connection.query("INSERT INTO Interest SET ?", data, function(err, result){
             if(err){
