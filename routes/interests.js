@@ -78,7 +78,41 @@ router.get('/:postId', function(req, res){
 
 
 /* POST */
+/* POST */
 router.post('/', function(req, res){
+
+    var postId = req.body.postId;
+    var studentEmail = req.body.studentEmail;
+    var tutorEmail = req.body.tutorEmail;
+    var description = req.body.description;
+
+    var json = {
+        isSucceeded: true
+    };
+
+    var data = {
+        postId: postId,
+        email: tutorEmail,
+        description: description
+    };
+
+    console.log("email: "+ email + ", description: " + description);
+
+    pool.getConnection(function(err, connection){
+        connection.query("INSERT INTO Interest SET ?", data, function(err, result){
+            if(err){
+                console.log("err : " + err);
+                json.isSucceeded = false;
+                res.send(json);
+            }else{
+                res.send(json);
+            }
+            connection.release();
+        });
+    });
+});
+
+/*router.post('/', function(req, res){
 
     var postId = req.body.postId;
     var studentEmail = req.body.studentEmail;
@@ -126,7 +160,7 @@ router.post('/', function(req, res){
             connection.release();
         });
     });
-});
+});*/
 
 router.post('/gcm', function(req, res){
     var studentEmail = req.body.studentEmail;
