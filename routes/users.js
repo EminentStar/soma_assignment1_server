@@ -125,7 +125,7 @@ router.post('/common/login', function(req, res){
           json.name = rows[0].name;
           json.email = rows[0].email;
           json.phoneNumber = rows[0].phoneNumber,
-          json.gcmToken = rows[0].gcmToken;
+              json.gcmToken = rows[0].gcmToken;
           res.send(json);
         }else{
           console.log("로그인 실패");
@@ -136,6 +136,48 @@ router.post('/common/login', function(req, res){
     });
   });
 });
+
+//페이스북 회원가입 여부 및 로그인
+router.post("/fb", function(req, res){
+  var email = req.body.email;
+  var name = req.body.name;
+  var gcmToken = req.body.gcmToken;
+  var createTime = new Date();
+
+  var json = {
+    email: email,
+    pwd: "",
+    name: name,
+    introduction: "",
+    createTime: createTime,
+    isFacebook: 1,
+    phoneNumber: "",
+    gcmToken: gcmToken
+  }
+  pool.getConnection(function(err, connection){
+    connection.query("SELECT * AS rowCount FROM User WHERE email ='" + email + "'", function(err, rows){
+      if(err){
+        console.error("err : " + err);
+      }else{
+        if(rows.length == 1) { //이미 페이스북으로 회원가입 하였을 때
+          connection.query("UPDATE User SET gcmToken = '" + gcmToken + "' WHERE email = '" + email + "' ", function(err, result){
+            if(err) console.error("err: "+ err);
+            json.introduction = rows.introduction;
+            json.phoneNumber  =rows.phoneNumber;
+            res.send(json);
+          });
+        }else{//테이블에 없으므로 페이스북 회원가입을 시도
+          connection.query("INSERT INTO User SET ?", json, function(err, result){
+            if(err) console.log("err : " + err);
+            res.send(json);
+          });
+        }
+      }
+      connection.release();
+    });
+  });
+});
+
 
 module.exports = router;
 
