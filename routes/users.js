@@ -135,13 +135,13 @@ router.post('/common/login', function(req, res){
   console.log("email: "+ email + ", pwd: "+ pwd);
 
   pool.getConnection(function(err, connection){
-    connection.query("SELECT pwd FROM User WHERE email ='"+email+"'", function(err, row){
+    connection.query("SELECT * FROM User WHERE email ='"+email+"'", function(err, row){
       if(err){
         console.error("err : " + err);
       }else{
-        console.log("rowsCnt: " + rows.length);
-        json.rowCount = rows.length;
-        if(rows.length != 0){
+        console.log("rowsCnt: " + row.length);
+        json.rowCount = row.length;
+        if(row.length != 0){
             if(passwordHash.verify(pwd, row[0].pwd)){ //올바른 비밀번호
                 connection.query("UPDATE User SET gcmToken = '" + gcmToken + "' WHERE email = '" + email + "' ", function(err, result){
                     if(err){
@@ -149,9 +149,9 @@ router.post('/common/login', function(req, res){
                         res.send(json);
                     }else{
                         json.isSucceeded = true;
-                        json.name = rows[0].name;
-                        json.email = rows[0].email;
-                        json.phoneNumber = rows[0].phoneNumber;
+                        json.name = row[0].name;
+                        json.email = row[0].email;
+                        json.phoneNumber = row[0].phoneNumber;
                         json.gcmToken = gcmToken;
                         res.send(json);
                     }
