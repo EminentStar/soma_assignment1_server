@@ -93,7 +93,11 @@ router.post('/', function(req, res){
             }else{
                 res.send(json);
                 connection.query("SELECT gcmToken FROM User WHERE email = '" + studentEmail + "'", function(err, row){
-                    if(err) console.log("err: " + err);
+                    if(err){
+                        console.log("err: " + err);
+                        json.isSucceeded = false;
+                        res.send(json);
+                    }
                     else{
                         if(row.length == 1){
                             registrationIds.push(row[0].gcmToken);
@@ -104,6 +108,7 @@ router.post('/', function(req, res){
                                 else console.log("result: " + result);
                                 registrationIds = [];
                             });
+                            res.send(json);
                         }
                     }
                 });
