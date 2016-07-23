@@ -110,8 +110,8 @@ router.post('/suggest', function(req, res){
                     }
                 });
             }
+            connection.release();
         });
-        connection.release();
     });
 });
 
