@@ -68,8 +68,9 @@ router.get('/:postId', function(req, res){
 router.post('/', function(req, res){
 
     var postId = req.body.postId;
-    var email = req.body.email;
+    var tutorEmail = req.body.tutorEmail;
     var description = req.body.description;
+    var studentEmail = req.body.studentEmail;
 
     var json = {
         isSucceeded: true
@@ -77,7 +78,7 @@ router.post('/', function(req, res){
 
     var data = {
         postId: postId,
-        email: email,
+        email: tutorEmail,
         description: description
     };
 
@@ -91,6 +92,21 @@ router.post('/', function(req, res){
                 res.send(json);
             }else{
                 res.send(json);
+                connection.query("SELECT gcmToken FROM User WHERE email = '" + studentEmail + "'", function(err, row){
+                    if(err) console.log("err: " + err);
+                    else{
+                        if(row.length == 1){
+                            registrationIds.push(row[0].gcmToken);
+                            messageToStudent.params.data.title = "튜터링 신청이 왔습니다.";
+                            messageToStudent.params.data.message = "신청자: " + tutorEmail;
+                            sender.send(messageToStudent, registrationIds, 4, function(err, result){
+                                if(err) console.log("err: " + err);
+                                else console.log("result: " + result);
+                                registrationIds = [];
+                            });
+                        }
+                    }
+                });
             }
             connection.release();
         });
