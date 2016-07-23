@@ -97,10 +97,10 @@ router.post('/', function(req, res){
     });
 });
 
-router.post('/gcm/:studentEmail', function(req, res){
-    var studentEmail = req.params.studentEmail;
+router.post('/gcm', function(req, res){
+    var studentEmail = req.body.studentEmail;
     var postId = req.body.postId;
-    var tutorEmail = req.body.email;
+    var tutorEmail = req.body.tutorEmail;
 
     var studentInfo = {
         email: studentEmail,
