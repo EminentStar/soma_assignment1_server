@@ -97,7 +97,7 @@ router.post('/', function(req, res){
     });
 });
 
-router.delete('', function(req, res){
+router.post('/gcm', function(req, res){
     var studentEmail = req.body.studentEmail;
     var postId = req.body.postId;
     var tutorEmail = req.body.email;
@@ -121,6 +121,8 @@ router.delete('', function(req, res){
 
     var success = true;
 
+    console.log("delete test: " + studentEmail + ", " + postId + ", " + tutorEmail);
+
     //studentEmail과 tutorEmail을 이용하여 User Table에서 각각 student와 tutor의 name, phoneNumber, gcmToken을 얻는다.
     pool.getConnection(function(err, connection){
         connection.query("SELECT name, phoneNumber, gcmToken FROM User WHERE email = '"
@@ -130,16 +132,16 @@ router.delete('', function(req, res){
                 success = false;
             }
             if(rowStudent.length == 1){
-                studentInfo.name = row[0].name;
-                studentInfo.phoneNumber = row[0].phoneNumber;
-                studentInfo.gcmToken = row[0].gcmToken;
+                studentInfo.name = rowStudent[0].name;
+                studentInfo.phoneNumber = rowStudent[0].phoneNumber;
+                studentInfo.gcmToken = rowStudent[0].gcmToken;
                 connection.query("SELECT name, phoneNumber, gcmToken FROM User WHERE email = '"
                                     + tutorInfo.email + "'",function(err,rowTutor){
                     if(err) console.log("err: " + err);
                     if(rowTutor.length == 1){
-                        tutorInfo.name = row[0].name;
-                        tutorInfo.phoneNumber = row[0].phoneNumber;
-                        tutorInfo.gcmToken = row[0].gcmToken;
+                        tutorInfo.name = rowTutor[0].name;
+                        tutorInfo.phoneNumber = rowTutor[0].phoneNumber;
+                        tutorInfo.gcmToken = rowTutor[0].gcmToken;
                         //student와 tutor에 보낼 메시지에 이름과 전화번호를 각자 셋팅한다.
                         messageToStudent.data.title = tutorInfo.name + "님과 매칭";
                         messageToStudent.data.message = "연락하세요: " + tutorInfo.phoneNumber ;
