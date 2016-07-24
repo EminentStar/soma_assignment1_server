@@ -12,6 +12,7 @@ var pool = mysql.createPool({
 
 var iconv = require('iconv-lite');
 
+var passwordHash = require('password-hash');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -61,27 +62,33 @@ router.post('/deleteUser', function(req,res){
 });
 
 router.post('/login', function(req, res){
-  var email = req.body.email;
-  var pwd = req.body.pwd;
+    var email = req.body.email;
+    var pwd = req.body.pwd;
 
-  console.log(req.body);
+    console.log(req.body);
 
-  console.log(email+ ",," + pwd);
+    console.log(email+ ",," + pwd);
 
-  if(email == "admin@hweach.com" && pwd == "0000"){ //관리자 로그인 성공
-    pool.getConnection(function(err, connection){
-      connection.query("SELECT email, name, introduction, createTime, isFacebook, phoneNumber, gcmToken FROM User", function(err, rows){
-        if(err) console.error("err : " + err);
-        //console.log("rows: " + JSON.stringify(rows));
-        //json.userCount = rows.length;
-        //res.send(json);
-        connection.release();
-        res.render('cmsUserList', {userList: rows});
-      });
+  pool.getConnection(function(err, connection){
+    connection.query("SELECT pwd FROM User WHERE email = '" + email + "'", function(err, row){
+      if(err) console.log("err: " + err);
+      else{
+        if(passwordHash.verify(pwd, row[0].pwd)){
+          connection.query("SELECT email, name, introduction, createTime, isFacebook, phoneNumber, gcmToken FROM User", function(err, rows){
+            if(err) {
+              console.error("err : " + err);
+              res.render('error', {});
+            }
+            connection.release();
+            res.render('cmsUserList', {userList: rows});
+          });
+        }else{
+          res.render('error', {});
+        }
+      }
     });
-  }else{
-    console.log("로그인 실패");
-  }
+  });
 });
+
 
 module.exports = router;
