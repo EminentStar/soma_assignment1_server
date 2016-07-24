@@ -46,41 +46,51 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li class="active"><a href="cmsUserList">회원조회 <span class="sr-only">(current)</span></a></li>
-                <li><a href="cmsUserDelete">회원삭제</a></li>
+                <li><a href="cmsUserList">회원조회</a></li>
+                <li ><a href="cmsUserDelete">회원삭제 </a></li>
             </ul>
             <ul class="nav nav-sidebar">
                 <li><a href="cmsPostList">게시글 조회</a></li>
-                <li><a href="cmsPostDelete">게시글 삭제</a></li>
+                <li class="active"><a href="cmsPostDelete">게시글 삭제 <span class="sr-only">(current)</span></a></li>
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h2>회원조회</h2>
+            <h1 class="page-header">게시글 삭제</h1>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <form class="navbar-form navbar-right" action="deletePost" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="email" placeholder="삭제할 postId" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success">게시글 삭제</button>
+                </form>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                     <tr>
+                        <th>postId</th>
                         <th>email</th>
-                        <th>name</th>
-                        <th>introduction</th>
-                        <th>createTime</th>
-                        <th>isFacebook</th>
-                        <th>phoneNumber</th>
-                        <th>gcmToken</th>
+                        <th>title</th>
+                        <th>content</th>
+                        <th>isComplete</th>
+                        <th>interestCount</th>
+                        <th>commentCount</th>
                     </tr>
                     </thead>
-                    <% if(userList != null) for (var i = 0; i <userList.length; i++){%>
-                        <tbody>
-                        <tr>
-                            <td><%=userList[i].email%></td>
-                            <td><%=userList[i].name%></td>
-                            <td><%=userList[i].introduction%></td>
-                            <td><%=userList[i].createTime%></td>
-                            <td><%=userList[i].isFacebook%></td>
-                            <td><%=userList[i].phoneNumber%></td>
-                            <td><%=userList[i].gcmToken%></td>
-                        </tr>
-                        </tbody>
+                    <% if(postList != null) for (var i = 0; i <postList.length; i++){%>
+                    <tbody>
+                    <tr>
+                        <td><%=postList[i].postId%></td>
+                        <td><%=postList[i].email%></td>
+                        <td><%=postList[i].title%></td>
+                        <td><%=postList[i].content%></td>
+                        <td><%=postList[i].isComplete%></td>
+                        <td><%=postList[i].interestCount%></td>
+                        <td><%=postList[i].commentCount%></td>
+                    </tr>
+                    </tbody>
                     <%}%>
                 </table>
             </div>
