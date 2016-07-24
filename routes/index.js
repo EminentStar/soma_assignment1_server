@@ -59,12 +59,18 @@ router.get('/cmsPostDelete', function(req, res){
 router.post('/deletePost', function(req,res){
   var postId = req.body.postId;
   pool.getConnection(function(err, connection){
-    connection.query("DELETE FROM Post WHERE email = '"+ email+"'", function(err, rows){
+    connection.query("DELETE FROM Post WHERE postId = '"+ postId + "'", function(err, rows){
       if(err) console.error("err : " + err);
       else{//게시글 삭제 성공 및 갱신
+        var query = "SELECT Post.postId AS postId,"+
+            " Post.email AS email, Post.title AS title,"+
+            " Post.content AS content, isComplete,"+
+            "(SELECT COUNT(*) FROM Interest WHERE Post.postId = Interest.postId ) AS interestCount, "+
+            "(SELECT COUNT(*) FROM Comment WHERE Post.postId = Comment.postId ) AS commentCount"+
+            " FROM Post ORDER BY postId DESC;"
 
         pool.getConnection(function(err, connection){
-          connection.query("DELETE FROM Post WHERE postId = '"+ postId + "'", function(err, rows){
+          connection.query(query, function(err, rows){
             if(err) console.error("err : " + err);
 
             connection.release();
